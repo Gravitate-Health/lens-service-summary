@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: summary-lens-python
-        image: ggravitate-registry.cr.de-fra.ionos.com/summary-lens-service:latest
+        image: gghcr.io/gravitate-health/summary-lens-service:latest
         imagePullPolicy: Always
         env:
         - name: SERVER_URL
