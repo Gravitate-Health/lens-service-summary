@@ -7,7 +7,8 @@ from flask import jsonify, request
 
 from lens_app import app
 from lens_app.core import (
-    SERVER_URL,
+    FHIR_EPI_URL,
+    FHIR_IPS_URL,
     process_bundle,
     process_ips,
     summarize,
@@ -67,7 +68,7 @@ def lens_app(bundleid=None):
     if request.method == "GET" and lenses == "":
         return "Error: missing parameters", 404
 
-    print(SERVER_URL)
+    print(FHIR_EPI_URL)
     if request.method == "POST":
         data = request.json
         epibundle = data.get("epi")
@@ -81,15 +82,15 @@ def lens_app(bundleid=None):
         print("epibundle is none")
         # print(epibundle)
         # print(bundleid)
-        print(SERVER_URL + "epi/api/fhir/Bundle/" + bundleid)
+        print(FHIR_EPI_URL + "/Bundle/" + bundleid)
         print(ips)
-        epibundle = requests.get(SERVER_URL + "epi/api/fhir/Bundle/" + bundleid).json()
+        epibundle = requests.get(FHIR_EPI_URL + "/Bundle/" + bundleid).json()
     print(epibundle)
     language, epi, drug_name = process_bundle(epibundle)
     # GET https://fosps.gravitatehealth.eu/ips/api/fhir/Patient/$summary?identifier=alicia-1
 
     title = TITLE_DOC[language]
-    print(SERVER_URL)
+    print(FHIR_IPS_URL)
     if ips is None and patientIdentifier != "":
         # print(ips)
         body = {
@@ -100,7 +101,7 @@ def lens_app(bundleid=None):
             ],
         }
         ips = requests.post(
-            SERVER_URL + "ips/api/fhir/Patient/$summary", json=body, timeout=10
+            FHIR_IPS_URL + "/Patient/$summary", json=body, timeout=10
         ).json()
     # print(ips)
     if ips:

@@ -14,7 +14,8 @@ from lens_app.prompts import PROMPT_LIST
 
 load_dotenv()
 
-SERVER_URL = os.getenv("SERVER_URL")
+FHIR_EPI_URL = os.getenv("FHIR_EPI_URL")
+FHIR_IPS_URL = os.getenv("FHIR_IPS_URL")
 MODEL_URL = os.getenv("MODEL_URL")
 print("Charging the model: " + MODEL_URL)
 client = Client(host=MODEL_URL)

@@ -17,8 +17,10 @@ spec:
         image: gghcr.io/gravitate-health/summary-lens-service:latest
         imagePullPolicy: Always
         env:
-        - name: SERVER_URL
-          value: "https://gravitate-health.lst.tfo.upm.es/"
+        - name: FHIR_EPI_URL
+          value: "http://fhir-server-epi:8080/api/fhir"
+        - name: FHIR_IPS_URL
+          value: "http://fhir-server-ips:8080/api/fhir"
         - name: MODEL_URL
           value: "http://tinman.lst:11434"
         - name: OPENAI_KEY
