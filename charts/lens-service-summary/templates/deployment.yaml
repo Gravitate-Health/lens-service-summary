@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "lens-service-summary.fullname" . }}
+  labels:
+    {{- include "lens-service-summary.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "lens-service-summary.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "lens-service-summary.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "lens-service-summary.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: FHIR_EPI_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "lens-service-summary.fullname" . }}
+                  key: FHIR_EPI_URL
+            - name: FHIR_IPS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "lens-service-summary.fullname" . }}
+                  key: FHIR_IPS_URL
+            - name: MODEL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "lens-service-summary.fullname" . }}
+                  key: MODEL_URL
+            - name: OPENAI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "lens-service-summary.fullname" . }}
+                  key: OPENAI_KEY
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "lens-service-summary.fullname" . }}
+                  key: GROQ_API_KEY
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

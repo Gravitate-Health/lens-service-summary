@@ -57,3 +57,24 @@ Creating an effective prompt for a Large Language Model (LLM) to summarize a med
 - **Accuracy and Comprehensibility:** The LLM's ability to understand and process medical documents depends on the clarity of the prompt and the document's complexity. Ensure the document is well-structured and the prompt is precisely formulated to improve the quality of the summary.
 
 This approach ensures that your request to the LLM is clear, specific, and structured to yield a summary that is directly relevant and actionable for the patient in question.
+
+## Deployment
+
+### Deploy via Helm (OCI)
+
+Deployments can be performed directly from GitHub Container Registry (OCI artifact) without cloning this repository.
+
+```bash
+# Login to registry (if private)
+helm registry login ghcr.io
+
+# Deploy directly from the registry
+helm install my-release oci://ghcr.io/<your-org>/charts/<chart-name> --version <version>
+```
+
+### Local Development
+
+```bash
+helm lint charts/lens-service-summary
+helm template my-release charts/lens-service-summary
+```

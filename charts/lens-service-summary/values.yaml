@@ -1,0 +1,71 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/gravitate-health/summary-lens-service
+  tag: "v0.16.0"
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: summary-lens-service
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+config:
+  fhirEpiUrl: "http://fhir-server-epi:8080/epi/api/fhir"
+  fhirIpsUrl: "http://fhir-server-ips:8080/ips/api/fhir"
+  modelUrl: "https://ollama.lst.tfo.upm.es"
+
+secret:
+  openaiKey: ""
+  groqApiKey: ""
+
+# Networking type options:
+# - istio: render Istio VirtualService template
+# - ingress: render Kubernetes Ingress template
+# - none: render neither Istio nor Ingress resources
+networking:
+  type: istio
+
+  istio:
+    virtualService:
+      enabled: true
+      hosts:
+        - "*"
+      gateways:
+        - gh-gateway
+      uriPrefix: /ai/
+      rewriteUri: /
+      destinationHost: ""
+      destinationPort: 80
+      corsPolicy:
+        allowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        allowOrigins:
+          - "*"
+        allowHeaders:
+          - content-type
+          - Accept
+
+  ingress:
+    enabled: true
+    className: ""
+    annotations: {}
+    hosts:
+      - host: ""
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
